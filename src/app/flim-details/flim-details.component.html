@@ -1,67 +1,76 @@
-
 <div class="container">
-  <h4>Dashboard</h4>
-  <div class="col-md-12 col-lg-12" style="padding:0">
-
+  <div class="col-md-12 col-lg-12" style="padding:10px 0">
     <div class="panel panel-default">
       <div class="panel-body pannel-padding-left">
-        <h5 class="search-style">Search Filter</h5>
-        <div class="col-md-3 col-lg-3">
-          <h6>Name:</h6>
-          <input type="text" [(ngModel)]="nameSearch" class="form-control" style="width:180px;" placeholder="Search By Name">
-        </div>
-        <div class="col-md-3 col-lg-3">
-          <h6>Gender:</h6>
-          <input [(ngModel)]="genderSearch" class="form-control" type="text" style="width:180px;" placeholder="Search By Gender" />
-        </div>
-        <div class="col-md-3 col-lg-3">
-          <h6>Birth Year:</h6>
-          <input [(ngModel)]="birthyearSearch" class="form-control" type="text" style="width:180px;" name="amount" placeholder="Birth Year"
-          />
-        </div>
-        <div class="col-md-3 col-lg-3">
-          <h6>Films Title:</h6>
-          <input [(ngModel)]="flimstitleSearch" class="form-control" type="text" style="width:180px;" name="amount" placeholder="Films Title"
-          />
-        </div>
-      </div>
-    </div>
-
-  </div>
-  <div class="col-md-12 col-lg-12" style="padding:0px" id="tableaAlign">
-
-    <div class="panel panel-default pannel-default-bottom">
-      <div class="panel-body" style="overflow: hidden">
-        <table class="table" style="overflow:auto">
-          <thead>
-            <tr class="custom-head-seperator">
-              <th class="col-md-3 col-lg-3">Name</th>
-              <th class="col-md-3 col-lg-3">Gender</th>
-              <th class="col-md-3 col-lg-3">Birth Year</th>
-              <th class="col-md-3 col-lg-3">Films Title</th>
-            </tr>
-          </thead>
-          <div class="loadspins" *ngIf="loadSaveSpinner">
-            <i class="fa fa-circle-o-notch fa-spin" style="font-size:24px;position:absolute;top:45px;color:#0269c2"></i>
+        <div class="col-md-2 col-lg-2 card">
+          <div>
+            <h4 class="heder-style-all">All</h4>
           </div>
-          <tbody>
-            <tr *ngFor='let item of displayFlimDetails | userSearch:nameSearch:genderSearch:birthyearSearch:flimstitleSearch; let i = index;'>
-              <td>{{item.name}}</td>
-              <td>{{item.gender}}</td>
-              <td>{{item.birth_year}}</td>
-              <td>
-                <div *ngFor="let chname of item?.flimtitle | flimTitle:flimstitleSearch; let i =index;">
-                  {{chname?.title}}
-                  <span *ngIf="i<item?.flimtitle.length-1">,</span>
+          <div class="menu-list-name">
+            <ul *ngFor="let item of categoryList1; let i=index">
+              <li>{{item}}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-5 col-lg-5 card" style="height:600px;overflow:auto;">
+            <div class="loadspins" *ngIf="loadSaveSpinner">
+                <i class="fa fa-circle-o-notch fa-spin" style="font-size:24px;position:absolute;top:45px;color:#0269c2"></i>
+              </div>
+          <div style="margin-bottom:5px;" *ngFor="let item of categoryList1; let i=index">
+            <h4 class="heder-style-orin">{{item}}</h4>
+            <div *ngFor="let x of foodDataArrayList; let i=index">
+              <div *ngIf='x.category == item'>
+                <div class="menu-items-starts">
+                  <div style="height:40px;">
+                    <div class="panel-title col-lg-6">
+                      <span *ngIf="x.vegflag == 'nonveg'" class="color-icon"></span>
+                      <span *ngIf="x.vegflag == 'veg'" class="veg-icon"></span>
+                      <a data-toggle="collapse" href="#collapse{{i}}">{{x.name}}</a>
+                    </div>
+                    <div class="panel-title col-lg-3">
+                      <button (click)="removeRequestedQuantity(x,i)" type="button" class="btn btn-default" style="padding:0;">
+                        <span class="glyphicon glyphicon-minus"></span>
+                      </button>
+                      <span style="margin:0 12px;">{{x.reqquantity}}</span>
+                      <button (click)="AddRequestedQuantity(x,i)" type="button" class="btn btn-default" style="padding:0;">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </button>
+                    </div>
+                    <div class="panel-title col-lg-2">
+                      {{x.price | currency: 'INR':true}}
+                    </div>
+                  </div>
+                  <div id="collapse{{i}}" class="panel-collapse collapse" style="clear: both;padding-bottom: 15px;text-align: left;margin-left: 20px;">
+                    {{x.description}}
+                  </div>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-          <div *ngIf="displayFlimDetails.length ==0" class="no-data">
-              <div class="alert alert-danger" style="text-align:center;">No Details Found</div>
+              </div>
+            </div>
           </div>
-        </table>
+        </div>
+        <div class="col-md-4 col-lg-4 card">
+          <div>
+            <h4 (click)="removeitems($event)" class="heder-style-cart">Your Cart
+              <span class="glyphicon glyphicon-trash" style="float:right;cursor:pointer"></span>
+            </h4>
+          </div>
+          <div class="price-cart" *ngIf='checkoutdataList.length>0'>
+            <ul *ngFor="let y of checkoutdataList; let i=index">
+              <li>
+                <span style="width: 45%;display: inline-block;">{{y.name}} </span>
+                <span style="margin-left:85px;">X {{y.reqquantity}}</span>
+                <span class="amount-dgn">{{y.price | currency: 'INR':true}}</span>
+              </li>
+            </ul>
+            <div style="border-top:2px solid #000;margin-top:10px;">
+              <p style="margin-top:10px">Total
+                <span class="amount-dgn">{{checkTotal | currency: 'INR':true}}</span>
+              </p>
+
+            </div>
+            <button class="btn primary-dgn">CHECKOUT</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>

@@ -1,11 +1,11 @@
 .primary{
-    background-color: #0269c2;
+    background-color: #FCBE44;
     border-radius: 0px;
     margin: -1px;
 }
 .primary a{
     background-color: transparent;
-    color: #FFF;
+    color: #000;
 }
 .primary a :hover{
     background-color: transparent;

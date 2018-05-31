@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { SelectItem } from 'primeng/primeng';
 import { FlimServiceService } from '../service/flim-service.service'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import * as alasql from 'alasql';
+import { FormGroup, FormControl, FormArray, NgForm, FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
@@ -11,70 +13,85 @@ import * as alasql from 'alasql';
   styleUrls: ['./flim-details.component.css']
 })
 export class FlimDetailsComponent implements OnInit {
-  flimDetailsData:Array<object>=[];
-  flimTitleCount:number;
-  displayFlimDetails:any;
-  loadSaveSpinner:boolean=true;
+ foodDataArrayList:any;
+ finalDataArrayList:any;
+ loadSaveSpinner:boolean=false;
+ categoryList1:any;
+ checkoutdataList:any;
+ checkTotal:number;
   constructor(private flimServices:FlimServiceService) {
-    this.displayFlimDetails=[];
+   this.foodDataArrayList=[];
+   this.categoryList1=[];
+   this.finalDataArrayList=[];
+   this.checkoutdataList=[];
    }
 
   ngOnInit() {
-    this.loadTitleCount();
     this.loadFlimdata();
   }
-  loadTitleCount(){
-    this.flimServices.getFlimtitleCount().subscribe(data=>{
-      this.flimTitleCount=data.count;
-      this.getAllFlimTitles(data.count);
-    })
-  }
-  currentIndex: any = [];
+
   loadFlimdata() {
-    this.flimServices.getFlimData().subscribe(data => {
-      this.flimDetailsData = data.results;
-      for (let i = 0; i < data.results.length; i++) {
-        let stroeindex = [];
-        let flimdata = data.results[i].films;
-        for (let j = 0; j < flimdata.length; j++) {
-          stroeindex.push(flimdata[j].match(/[0-9]+/).toString())
-        }
-        this.currentIndex.push({ 'index': i, 'value': stroeindex });
+    this.loadSaveSpinner=true;
+    this.flimServices.getfoodData().subscribe(data => {
+      this.loadSaveSpinner=false;
+      this.foodDataArrayList = data;
+      var categoryList= [];
+      for(let i=0;i<this.foodDataArrayList.length;i++){
+        categoryList.push(this.foodDataArrayList[i].category);
       }
+      this.categoryList1 = categoryList.filter(function(item, pos) {
+        return categoryList.indexOf(item) == pos;
+    })
+    
+     
 
     })
   }
 
-  getAllFlimTitles(count){
-    let storeTempTitle=[];
-    for(let i=1;i<=count;i++){
-      this.flimServices.loadEachTitle('https://swapi.co/api/films/'+i).subscribe(data=>{
-        storeTempTitle.push({'id':i,'title':data.title});
-       this.combineArrayItems(storeTempTitle)
-      })
-    }
-  }
-
-  combineArrayItems(storeTempTitle) {
-    if (storeTempTitle.length == this.flimTitleCount) {
-      for (let i = 0; i < this.currentIndex.length; i++) {
-        let ArrayIndex: any = [];
-        let values = this.currentIndex[i].value;
-        for (let j = 0; j < values.length; j++) {
-          ArrayIndex.push({ 'id': +values[j] })
-        }
-        var queryresult = alasql('SELECT b.id, a.title from ? as a,? as b WHERE a.id=b.id', [storeTempTitle, ArrayIndex]);
-        if (this.currentIndex[i]) {
-          var obj = {
-            name: this.flimDetailsData[i]['name'],
-            gender: this.flimDetailsData[i]['gender'],
-            birth_year: this.flimDetailsData[i]['birth_year'],
-            flimtitle: queryresult
+  AddRequestedQuantity(x,i){
+      x.reqquantity =isNaN(x.reqquantity)? 1:x.reqquantity +1;
+      if(this.checkoutdataList.length !=0){
+        for(let i=0;i<this.checkoutdataList.length;i++){
+          if(x.name == this.checkoutdataList[i].name){
+            this.checkoutdataList[i].reqquantity=x.reqquantity;
+            this.checkoutdataList[i].price=x.price*x.reqquantity;
+          }else{
+            this.checkoutdataList.push({
+              'reqquantity':x.reqquantity,
+              'name':x.name,
+              'price':x.price*x.reqquantity
+            })
           }
-          this.loadSaveSpinner = false;
-          this.displayFlimDetails.push(obj);
         }
+      }else{
+        this.checkoutdataList.push({
+          'reqquantity':x.reqquantity,
+          'name':x.name,
+          'price':x.price*x.reqquantity
+        })
+      }
+      this.checkTotal=0;
+     for(let j=0;j<this.checkoutdataList.length;j++){
+      this.checkTotal +=this.checkoutdataList[j].price;
+     }
+  }
+  removeRequestedQuantity(x){
+    this.checkoutdataList=[];
+    if(x.reqquantity >=1){
+      x.reqquantity =isNaN(x.reqquantity)? 1:x.reqquantity -1;
+      this.checkoutdataList.push({
+        'reqquantity':x.reqquantity,
+        'name':x.name,
+        'price':x.price*x.reqquantity
+      })
+      this.checkTotal=0;
+      for(let j=0;j<this.checkoutdataList.length;j++){
+       this.checkTotal +=this.checkoutdataList[j].price;
       }
     }
+  }
+  removeitems(event){
+    this.checkoutdataList=[];
+    this.checkTotal=null;
   }
 }

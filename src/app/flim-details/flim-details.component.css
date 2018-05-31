@@ -7,10 +7,110 @@ th {
     font-weight: bold;
     font-size: 12px;
 }
-
-
+div.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    padding: 0;
+    margin: 20px 0 0 14px;
+  }
+.heder-style-all{
+    padding: 12px;
+    text-align: left;
+    background: #FCBE44;
+    margin: 0;
+}
+.heder-style-orin{
+    padding: 6px;
+    text-align: center;
+    background: #FCBE44;
+    margin: 0;
+}
+.heder-style-cart{
+    padding: 14px;
+    text-align: left;
+    background: #FCBE44;
+    margin: 0;
+}
 .search-style{
     padding: 10px 15px;
+}
+
+.menu-list-name{
+    margin-top: 10px;
+    padding: 0;
+    text-align: left;
+}
+.menu-list-name ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.menu-list-name ul li{
+    padding: 8px;
+    cursor: pointer;
+    border-bottom:1px solid #ddd; 
+}
+
+.menu-items-starts{
+    padding: 0;
+    margin-top: 10px;
+}
+.menu-items-starts ul{
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin-left: 20px;
+    overflow: hidden;
+}
+.menu-items-starts ul li{
+    height: 45px;
+}
+
+.color-icon{
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    background: red;
+    float: left;
+    margin-top:3px; 
+}
+.veg-icon{
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    background: green;
+    float: left;
+    margin-top:3px; 
+}
+.loadspins{
+    position: absolute;
+    top: 4%;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 9999;
+    text-align: center;
+}
+.price-cart{
+    margin: 10px 0 0;
+    text-align: left;
+    padding: 10px;
+}
+.price-cart ul{
+    list-style: none;
+    padding: 0;
+}
+
+.amount-dgn{
+    float: right;
+}
+
+.primary-dgn{
+    width: 100%;
+    background: #FCBE44;
+    color: #000;
 }
 .loadspins{
     position: absolute;
@@ -129,12 +229,13 @@ thead {
         margin-top: -40px;
     }
     #tableaAlign {
-        margin-left: 40px!important;
+        margin-left: 15px!important;
         width: 90%!important;
         overflow: auto;
     }
     div.panel-body {
         overflow: scroll!important;
+        margin-bottom: 20px;
     }
     th.thAlign {
         width: 100px!important;
@@ -172,3 +273,7 @@ body {
     padding: 20px 8px;
     min-width: 100px;
 }
+.custom-select {
+    position: relative;
+    font-family: Arial;
+  }
